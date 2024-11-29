@@ -13,7 +13,8 @@
 //fill your username                   
 #define AIO_USERNAME    "VuongAdon1s"
 //fill your key
-#define AIO_KEY         "aio_jlpq54aIUGLlE5Mqd3aEfSnKJDr8"
+// comment to push to git
+// #define AIO_KEY         "aio_jlpq54aIUGLlE5Mqd3aEfSnKJDr8"
 
 //setup MQTT
 WiFiClient client;
