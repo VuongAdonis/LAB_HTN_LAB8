@@ -1,0 +1,7 @@
+../Core/Src/software_timer.c:21:6:timer_init	8	static
+../Core/Src/software_timer.c:26:6:timer_EnableDelayUs	8	static
+../Core/Src/software_timer.c:30:6:setTimer2	16	static
+../Core/Src/software_timer.c:37:6:setTimerSendTemp	16	static
+../Core/Src/software_timer.c:43:10:isFlagSendTemp	4	static
+../Core/Src/software_timer.c:53:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/software_timer.c:73:6:delay_us	16	static
