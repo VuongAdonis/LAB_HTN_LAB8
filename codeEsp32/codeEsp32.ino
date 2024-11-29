@@ -12,9 +12,7 @@
 #define AIO_SERVERPORT  1883
 //fill your username                   
 #define AIO_USERNAME    "VuongAdon1s"
-//fill your key
-// comment to push to git
-// #define AIO_KEY         ""
+//fill your keys
 
 //setup MQTT
 WiFiClient client;
