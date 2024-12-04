@@ -54,8 +54,21 @@ void uart_Rs232SendNumPercent(uint32_t num)
 	sprintf((void*)msg,"%ld",num/100);
     uart_Rs232SendString(msg);
     uart_Rs232SendString(".");
-    sprintf((void*)msg,"%ld",num%100);
+    sprintf((void*)msg,"%ld#",num%100);
     uart_Rs232SendString(msg);
+}
+
+void uart_EspSendString(uint8_t* str){
+	HAL_UART_Transmit(&huart2, (void*)msg, sprintf((void*)msg,"%s",str), 10);
+}
+
+void uart_EspSendNumPercent(uint32_t num)
+{
+	sprintf((void*)msg,"%ld",num/100);
+	uart_EspSendString(msg);
+	uart_EspSendString(".");
+    sprintf((void*)msg,"%ld#",num%100);
+    uart_EspSendString(msg);
 }
 
 void uart_init_esp(){
@@ -92,18 +105,25 @@ uint8_t uart_EspCheck(){
 
 char *convert2str(uint16_t val)
 {
-    char str2[50];
+    char str2[10];
     snprintf(str2, sizeof(str2), "%d", val);
 
     return strdup(str2); // Đảm bảo chuỗi được trả về được giữ nguyên giá trị sau khi thoát khỏi hàm.
 }
 
-void uartSendSensor()
+void uartSendSensor(uint16_t temp)
 {
-	char str1[50] = "!TEMP:";
-	char *str2 = convert2str((uint16_t)sensor_GetTemperature());
-	strcat(str1, str2);
-	uart_EspSendBytes(str1, strlen(str1));
+//	char str1[50] = "!TEMP#";
+////	char *str2 = convert2str((uint16_t)sensor_GetTemperature());
+	char *str2 = convert2str(temp);
+////	char str2[3] = "30";
+////	char str3[50] = "#";
+//	strcat(str1, str2);
+////	strcat(str1, str3);
+//	strcat(str1, "#");
+	uart_EspSendBytes(str2, strlen(str2));
+//	uart_EspSendNumPercent(temp * 100);
+//	uart_EspSendString(str2);
 }
 
 

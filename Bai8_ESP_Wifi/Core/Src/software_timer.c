@@ -36,7 +36,7 @@ void setTimer2(uint16_t duration){
 // LAB 8
 void setTimerSendTemp(uint16_t duration){
 	timerSendTemp_MUL = duration/TIMER_CYCLE_2;
-	timerSendTemp_counter = timer2_MUL;
+	timerSendTemp_counter = timerSendTemp_MUL;
 	flag_timerSendTemp = 0;
 }
 
@@ -63,7 +63,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			timerSendTemp_counter--;
 			if(timerSendTemp_counter == 0) {
 				flag_timerSendTemp = 1;
-				timerSendTemp_counter = timerSendTemp_MUL;
+				timerSendTemp_counter = 30000;
 			}
 		}
 		led7_Scan();

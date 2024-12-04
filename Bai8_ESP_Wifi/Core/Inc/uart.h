@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "gpio.h"
 #include "light_control.h"
+#include "sensor.h"
 
 extern uint8_t flag_uart2;
 extern uint8_t receive_buffer1;
@@ -32,7 +33,8 @@ void uart_init_esp();
 void uart_EspSendBytes(uint8_t* bytes, uint16_t size);
 
 // LAB 8
-void uartSendSensor();
+char *convert2str(uint16_t val);
+void uartSendSensor(uint16_t temp);
 
 #endif /* INC_UART_H_ */
 

@@ -41,6 +41,7 @@
 #include "touch.h"
 #include "uart.h"
 #include "light_control.h"
+#include <time.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,22 +120,25 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
- lcd_Clear(BLACK);
- setTimerSendTemp(15000);
+ lcd_Clear(WHITE);
+ setTimerSendTemp(30000);
+ sensor_init();
+ srand((unsigned int) time(NULL));
+ uint16_t randomValue = (rand() % 4) + 31;
+ uint16_t tempValue = 0;
  while (1)
   {
-	  // 50ms task
-//	  if(flag_timer2 == 1){
-//		  flag_timer2 = 0;
-//		  button_Scan();
-//		  test_Esp();
-//		  lightProcess();
-//		  test_LedDebug();
-//	  }
 	 if(isFlagSendTemp() == 1)
 	 {
 		 sensor_Read();
-		 uartSendSensor();
+//		 randomValue = (rand() % 4) + 31;
+		 tempValue = (uint16_t)sensor_GetTemperature();
+		 lcd_ShowIntNum(40, 100, tempValue, 3, RED, BLACK, 24);
+		 uartSendSensor(tempValue);
+		 // DEBUG
+		 lcd_ShowFloatNum(40, 40, sensor_GetTemperature(), 7, RED, BLACK, 24);
+//		 lcd_ShowStr(40, 80, str1, RED, BLACK, 24, 0);
+		 HAL_GPIO_TogglePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin);
 	 }
 
     /* USER CODE END WHILE */

@@ -3,9 +3,9 @@
 #include "Adafruit_MQTT_Client.h"
 
 //Wifi name
-#define WLAN_SSID       "wifi"
+#define WLAN_SSID       "ACLAB"
 //Wifi password
-#define WLAN_PASS       "03062003"
+#define WLAN_PASS       "ACLAB2023"
 
 //setup Adafruit
 #define AIO_SERVER      "io.adafruit.com"
@@ -13,25 +13,25 @@
 //fill your username                   
 #define AIO_USERNAME    "VuongAdon1s"
 //fill your keys
-
+#define AIO_KEY "aio_wvFo85UY42GWv2rdFpEy9MLbZWfQ"
 //setup MQTT
 WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 
 //setup publish
-Adafruit_MQTT_Publish TEMP_pub = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/TEMPERTURE");
+Adafruit_MQTT_Publish TEMP_pub = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temperture");
 
 // //setup subcribe
-Adafruit_MQTT_Subscribe TEMP_sub = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/TEMPERTURE", MQTT_QOS_1);
+Adafruit_MQTT_Subscribe TEMP_sub = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/temperture", MQTT_QOS_1);
 
-String parts[2];
+String parts[4];
 void devideString(String inputString)
 {
   int numberOfParts = 0; // Số lượng phần được tách
   int startPos = 0; // Vị trí bắt đầu tìm ký tự phân cách
 
   for (int i = 0; i < inputString.length(); i++) {
-    if (inputString.charAt(i) == ':') {
+    if (inputString.charAt(i) == '#') {
       parts[numberOfParts] = inputString.substring(startPos, i);
       startPos = i + 1;
       numberOfParts++;
@@ -56,7 +56,6 @@ void erasePart()
   parts[1] = "";
   parts[2] = "";
   parts[3] = "";
-  parts[4] = "";
 }
 
 void setup() {
@@ -74,10 +73,11 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
+  Serial.println("Connect wifi succeed");
 
   //subscribe light feed
   // light_sub.setCallback(lightcallback);
-  mqtt.subscribe(&TEMPERTURE);
+  mqtt.subscribe(&TEMP_sub);
 
   //connect MQTT
   while (mqtt.connect() != 0) { 
@@ -94,25 +94,44 @@ void loop() {
 
   //receive packet
   mqtt.processPackets(1);
-  
+  Serial.println("Send message");
   //read serial
   if(Serial.available()){
-    char msg = Serial.read();
+    // char msg = Serial.read();
 
-    String receivedString = ""; // Khởi tạo chuỗi để lưu trữ dữ liệu
-    receivedString += msg;
+    // String receivedString = ""; // Khởi tạo chuỗi để lưu trữ dữ liệu
+    // receivedString += msg;
+    // while (Serial.available()) { // Kiểm tra nếu có dữ liệu trong cổng UART
+    //   char incomingByte = Serial.read(); // Đọc dữ liệu từ cổng UART
+    //   receivedString += incomingByte; // Nối dữ liệu vào chuỗi
+    //   delay(2); // Đợi để nhận các byte tiếp theo (tùy thuộc vào tốc độ baudrate)
+    // }
+    // devideString(receivedString);
+    // printf("......");
+    // if(parts[0] == "!TEMP")
+    // {
+    //   int messageTemp = parts[1].toInt();
+    //   TEMP_pub.publish(messageTemp);
+    // }
+    // erasePart();
+
+    // String message = Serial.readStringUntil('#');
+
+    // String temp = Serial.readStringUntil('#');
+    // int messageTemp = temp.toInt();
+    // TEMP_pub.publish(messageTemp);
+    // int endString = Serial.read();
+
+    char messageTemp = Serial.read();
+    String receivedString = "";
+    receivedString += messageTemp;
     while (Serial.available()) { // Kiểm tra nếu có dữ liệu trong cổng UART
       char incomingByte = Serial.read(); // Đọc dữ liệu từ cổng UART
       receivedString += incomingByte; // Nối dữ liệu vào chuỗi
-      delay(2); // Đợi để nhận các byte tiếp theo (tùy thuộc vào tốc độ baudrate)
+      delay(1); // Đợi để nhận các byte tiếp theo (tùy thuộc vào tốc độ baudrate)
     }
-    devideString(receivedString);
-    if(parts[0] == "!TEMP")
-    {
-      int messageTemp = parts[1].toInt();
-      TEMP_pub.publish(messageTemp);
-    }
-    erasePart();
+    int TempValue = receivedString.toInt();
+    TEMP_pub.publish(TempValue);
   }
-  delay(10);
+  delay(1000);
 }
